@@ -36,7 +36,7 @@ Application::Application()
 	_pVertexShader = nullptr;
 	_pPixelShader = nullptr;
 	_pVertexLayout = nullptr;
-	_pVertexBuffer = nullptr;
+	_pVertexBufferSun = nullptr;
 	_pIndexBuffer = nullptr;
 	_pConstantBuffer = nullptr;
 }
@@ -150,20 +150,26 @@ HRESULT Application::InitVertexBuffer()
 {
 	HRESULT hr; // stands for hex result
 
-    // Create vertex buffer
+
+    //
+    // Create vertex buffer for sun
+    //
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -1.0f, 1.0f, 0.0f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, 1.0f, 0.0f ), XMFLOAT4( 0.0f, 1.0f, 0.0f, 1.0f ) },
-        { XMFLOAT3( -1.0f, -1.0f, 0.0f ), XMFLOAT4( 0.0f, 1.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, -1.0f, 0.0f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) },
-        { XMFLOAT3( 0.0f, 2.0f, 0.0f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 7
     };
 
     D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(SimpleVertex) * 5;
+    bd.ByteWidth = sizeof(SimpleVertex) * 8;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -171,8 +177,96 @@ HRESULT Application::InitVertexBuffer()
 	ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = vertices;
 
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+    // Create the buffer and check for any errors
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferSun);
+    if (FAILED(hr))
+        return hr;
 
+    //
+    // Vertex buffer for Mars
+    //
+
+	SimpleVertex verticesMars[] =
+    {
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 7
+    };
+
+	ZeroMemory(&bd, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(SimpleVertex) * 8;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+
+	ZeroMemory(&InitData, sizeof(InitData));
+    InitData.pSysMem = verticesMars;
+
+    // Create the buffer and check for any errors
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferMars);
+    if (FAILED(hr))
+        return hr;
+
+	//
+    // Vertex buffer for Earth
+    //
+    SimpleVertex verticesEarth[] =
+    {
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 7
+    };
+
+	ZeroMemory(&bd, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(SimpleVertex) * 8;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+
+	ZeroMemory(&InitData, sizeof(InitData));
+    InitData.pSysMem = verticesEarth;
+
+    // Create the buffer and check for any errors
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferEarth);
+    if (FAILED(hr))
+        return hr;
+
+	//
+    // Vertex buffer for moons
+    //
+    SimpleVertex verticesMoon[] =
+    {
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 7
+    };
+
+	ZeroMemory(&bd, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(SimpleVertex) * 8;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+
+	ZeroMemory(&InitData, sizeof(InitData));
+    InitData.pSysMem = verticesMoon;
+
+    // Create the buffer and check for any errors
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferMoon);
     if (FAILED(hr))
         return hr;
 
@@ -186,16 +280,19 @@ HRESULT Application::InitIndexBuffer()
     // Create index buffer
     WORD indices[] =
     {
-        0,1,2,
-        2,1,3,
-        4,1,0,
+        0, 1, 2, 0, 2, 3, // Top
+		0, 4, 5, 0, 5, 1, // Bottom
+		1, 5, 6, 1, 6, 2, // Left
+		2, 6, 7, 2, 7, 3, // Right
+		3, 7, 4, 3, 4, 0, // Front
+		4, 7, 6, 4, 6, 5  // Back
     };
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * 9;     
+    bd.ByteWidth = sizeof(WORD) * 36;     
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -388,7 +485,7 @@ HRESULT Application::InitDevice()
     // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferSun, &stride, &offset);
 
 	InitIndexBuffer();
 
@@ -410,6 +507,13 @@ HRESULT Application::InitDevice()
     if (FAILED(hr))
         return hr;
 
+    // Setup rasterizer for wire frame
+    D3D11_RASTERIZER_DESC wfdesc;
+	ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
+	wfdesc.FillMode = D3D11_FILL_WIREFRAME;
+	wfdesc.CullMode = D3D11_CULL_NONE;
+	hr = _pd3dDevice->CreateRasterizerState(&wfdesc, &_wireFrame);
+
     return S_OK;
 }
 
@@ -418,15 +522,21 @@ void Application::Cleanup()
     if (_pImmediateContext) _pImmediateContext->ClearState();
 
     if (_pConstantBuffer) _pConstantBuffer->Release();
-    if (_pVertexBuffer) _pVertexBuffer->Release();
+    if (_pVertexBufferSun) _pVertexBufferSun->Release();
+    if (_pVertexBufferMars) _pVertexBufferMars->Release();
+    if (_pVertexBufferEarth) _pVertexBufferEarth->Release();
+    if (_pVertexBufferMoon) _pVertexBufferMoon->Release();
     if (_pIndexBuffer) _pIndexBuffer->Release();
+
     if (_pVertexLayout) _pVertexLayout->Release();
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
-    if (_pRenderTargetView) _pRenderTargetView->Release();
+
+	if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
-    if (_pd3dDevice) _pd3dDevice->Release();
+	if (_pd3dDevice) _pd3dDevice->Release();
+    if (_wireFrame) _wireFrame->Release();
 	if (_depthStencilView) _depthStencilView->Release();
 	if (_depthStencilBuffer) _depthStencilBuffer->Release();
 }
@@ -435,10 +545,12 @@ void Application::Update()
 {
     // Update our time
     static float t = 0.0f;
+    static float t2 = 0.0f;
 
     if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
     {
         t += (float) XM_PI * 0.0125f;
+        t2 += (float) XM_PI * 0.0125f;
     }
     else
     {
@@ -448,14 +560,38 @@ void Application::Update()
         if (dwTimeStart == 0)
             dwTimeStart = dwTimeCur;
 
-        t = (dwTimeCur - dwTimeStart) / 1000.0f;
+        t =  (dwTimeCur - dwTimeStart) / 3000.0f;
+        t2 = (dwTimeCur - dwTimeStart) / 2000.0f;
     }
 
+    HandleInput();
+
     //
-    // Animate the cube
+    // Animate the sun
     //
-	XMStoreFloat4x4(&_world, XMMatrixRotationZ(t));
-    XMStoreFloat4x4(&_world2, XMMatrixRotationZ(t) * XMMatrixTranslation(0.0f, -2.0f, 0.0f));
+	XMStoreFloat4x4(&_world, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(t2) *
+        XMMatrixTranslation(0.0f, -0.25f, 0.0f));
+
+    //
+    // Animate mars
+    //
+    XMStoreFloat4x4(&_worldMars, XMMatrixScaling(0.75f, 0.75f, 0.75f) * XMMatrixRotationY(t) * 
+        XMMatrixTranslation(1.3f, 0.0f, 0.0f) * XMMatrixRotationY(t));
+    //
+    // Animate earth
+    //
+	XMStoreFloat4x4(&_worldEarth, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationY(t) * 
+        XMMatrixTranslation(2.25f, 0.05f, 0.0f) * XMMatrixRotationY(t));
+
+    //
+    // Animate the moons
+    //
+
+    // Moon for Earth
+    XMStoreFloat4x4(&_worldMoonEarth, XMMatrixScaling(0.1, 0.1, 0.1) * XMMatrixRotationY(t) * XMMatrixTranslation(2.25f, 0.05f, 0.0f) * XMMatrixRotationY(t) * XMMatrixTranslation(0.2f, 0.1f, 0.0f));
+
+    // Moon for Mars
+    XMStoreFloat4x4(&_worldMoonMars, XMMatrixScaling(0.1, 0.1, 0.1) * XMMatrixRotationY(t) * XMMatrixTranslation(1.3f, 0.0f, 0.0f) * XMMatrixRotationY(t) * XMMatrixTranslation(0.25f, 0.2f, 0.0f));
 }
 
 void Application::Draw()
@@ -463,7 +599,7 @@ void Application::Draw()
     //
     // Clear the back buffer
     //
-    float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha   
+    float ClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f}; // red,green,blue,alpha   
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
     //
@@ -489,24 +625,67 @@ void Application::Draw()
 	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     //
-    // Renders a triangle
+    // Renders the first object
     //
+    UINT stride = sizeof(SimpleVertex);
+    UINT offset = 0;
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferSun, &stride, &offset);
 	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->DrawIndexed(9, 0, 0);        
+	_pImmediateContext->DrawIndexed(36, 0, 0);        
 
     //
     // Draw the second Object
     //
-    world = XMLoadFloat4x4(&_world2);
+    world = XMLoadFloat4x4(&_worldMars);
     cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferMars, &stride, &offset);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    //
+    // Draw the third Object
+    //
+    world = XMLoadFloat4x4(&_worldEarth);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferEarth, &stride, &offset);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(9, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    //
+    // Draw the moons
+    //
+
+    // Moon for Earth
+    world = XMLoadFloat4x4(&_worldMoonEarth);
+    cb.mWorld = XMMatrixTranspose(world);
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferMoon, &stride, &offset);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    // Moon for Mars
+	world = XMLoadFloat4x4(&_worldMoonMars);
+    cb.mWorld = XMMatrixTranspose(world);
+
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->DrawIndexed(36, 0, 0);
 
     //
     // Present our back buffer to our front buffer
     //
     _pSwapChain->Present(0, 0);
+}
+
+void Application::HandleInput()
+{
+	if(GetAsyncKeyState(VK_F1))
+    {
+	    _pImmediateContext->RSSetState(_wireFrame); 
+    }
+    if(GetAsyncKeyState(VK_F2))
+    {
+	    _pImmediateContext->RSSetState(nullptr); 
+    }
 }

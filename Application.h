@@ -33,15 +33,16 @@ private:
 	ID3D11DeviceContext*    _pImmediateContext;
 	IDXGISwapChain*         _pSwapChain;
 	ID3D11RenderTargetView* _pRenderTargetView;
+	ID3D11RasterizerState*  _wireFrame;
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
-	ID3D11Buffer*           _pVertexBuffer;
+	ID3D11Buffer*           _pVertexBufferSun, *_pVertexBufferMars, *_pVertexBufferEarth, *_pVertexBufferMoon;
 	ID3D11Buffer*           _pIndexBuffer;
 	ID3D11Buffer*           _pConstantBuffer;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11Texture2D*		_depthStencilBuffer;
-	XMFLOAT4X4              _world, _world2;
+	XMFLOAT4X4              _world, _worldMars, _worldEarth, _worldMoonEarth, _worldMoonMars;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
 
@@ -65,5 +66,6 @@ public:
 
 	void Update();
 	void Draw();
+	void HandleInput();
 };
 
