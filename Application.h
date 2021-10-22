@@ -20,6 +20,7 @@ struct ConstantBuffer
 	XMMATRIX mWorld;
 	XMMATRIX mView;
 	XMMATRIX mProjection;
+	float time;
 };
 
 class Application
@@ -37,14 +38,15 @@ private:
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
-	ID3D11Buffer*           _pVertexBufferSun, *_pVertexBufferMars, *_pVertexBufferEarth, *_pVertexBufferMoon;
-	ID3D11Buffer*           _pIndexBuffer;
+	ID3D11Buffer*           _pVertexBufferSun, *_pVertexBufferMars, *_pVertexBufferEarth, *_pVertexBufferMoon, *_pVertexBufferPyramid;
+	ID3D11Buffer*           _pIndexBufferCube, *_pIndexBufferPyramid;
 	ID3D11Buffer*           _pConstantBuffer;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11Texture2D*		_depthStencilBuffer;
-	XMFLOAT4X4              _world, _worldMars, _worldEarth, _worldMoonEarth, _worldMoonMars;
+	XMFLOAT4X4              _world, _worldMars, _worldEarth, _worldMoonEarth, _worldMoonMars, _worldPyramid;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
+	ConstantBuffer			_cb;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);

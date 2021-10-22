@@ -36,8 +36,9 @@ Application::Application()
 	_pVertexShader = nullptr;
 	_pPixelShader = nullptr;
 	_pVertexLayout = nullptr;
-	_pVertexBufferSun = nullptr;
-	_pIndexBuffer = nullptr;
+    _pVertexBufferSun = nullptr;
+	_pIndexBufferCube = nullptr;
+    _pIndexBufferPyramid = nullptr;
 	_pConstantBuffer = nullptr;
 }
 
@@ -270,6 +271,32 @@ HRESULT Application::InitVertexBuffer()
     if (FAILED(hr))
         return hr;
 
+    //
+    // Vertex buffer for the pyramid
+    //
+    SimpleVertex verticesPyramid[] =
+    {
+        {XMFLOAT3( 0.5f, 0.0f, -0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 0
+        {XMFLOAT3( 0.5f, 0.0f,  0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 1
+        {XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 2
+        {XMFLOAT3(-0.5f, 0.0f,  0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 3
+        {XMFLOAT3( 0.0f, 0.5f,  0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)}, // 4 This is the tip
+    };
+
+    ZeroMemory(&bd, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(SimpleVertex) * 5;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+
+    ZeroMemory(&InitData, sizeof(InitData));
+    InitData.pSysMem = verticesPyramid;
+
+    // Create the buffer and check for any errors
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBufferPyramid);
+    if (FAILED(hr))
+        return hr;
+
 	return S_OK;
 }
 
@@ -278,7 +305,7 @@ HRESULT Application::InitIndexBuffer()
 	HRESULT hr;
 
     // Create index buffer
-    WORD indices[] =
+    WORD indicesCube[] =
     {
         0, 1, 2, 0, 2, 3, // Top
 		0, 4, 5, 0, 5, 1, // Bottom
@@ -298,8 +325,32 @@ HRESULT Application::InitIndexBuffer()
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = indices;
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+    InitData.pSysMem = indicesCube;
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBufferCube);
+
+    if (FAILED(hr))
+        return hr;
+
+    WORD indicesPyramid[] =
+    {
+        3, 0, 1,
+        3, 2, 0,
+        0, 4, 1,
+        0, 2, 4,
+        4, 3, 1,
+        3, 4, 2
+    };
+
+    ZeroMemory(&bd, sizeof(bd));
+
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(WORD) * 18;
+    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+
+    ZeroMemory(&InitData, sizeof(InitData));
+    InitData.pSysMem = indicesPyramid;
+    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBufferPyramid);
 
     if (FAILED(hr))
         return hr;
@@ -482,15 +533,7 @@ HRESULT Application::InitDevice()
 
 	InitVertexBuffer();
 
-    // Set vertex buffer
-    UINT stride = sizeof(SimpleVertex);
-    UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferSun, &stride, &offset);
-
 	InitIndexBuffer();
-
-    // Set index buffer
-    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -526,7 +569,8 @@ void Application::Cleanup()
     if (_pVertexBufferMars) _pVertexBufferMars->Release();
     if (_pVertexBufferEarth) _pVertexBufferEarth->Release();
     if (_pVertexBufferMoon) _pVertexBufferMoon->Release();
-    if (_pIndexBuffer) _pIndexBuffer->Release();
+    if (_pIndexBufferCube) _pIndexBufferCube->Release();
+    if (_pIndexBufferPyramid) _pIndexBufferPyramid->Release();
 
     if (_pVertexLayout) _pVertexLayout->Release();
     if (_pVertexShader) _pVertexShader->Release();
@@ -551,6 +595,7 @@ void Application::Update()
     {
         t += (float) XM_PI * 0.0125f;
         t2 += (float) XM_PI * 0.0125f;
+    	_cb.time = t;
     }
     else
     {
@@ -562,8 +607,11 @@ void Application::Update()
 
         t =  (dwTimeCur - dwTimeStart) / 3000.0f;
         t2 = (dwTimeCur - dwTimeStart) / 2000.0f;
-    }
 
+        
+        _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
+    }
+	
     HandleInput();
 
     //
@@ -588,10 +636,15 @@ void Application::Update()
     //
 
     // Moon for Earth
-    XMStoreFloat4x4(&_worldMoonEarth, XMMatrixScaling(0.1, 0.1, 0.1) * XMMatrixRotationY(t) * XMMatrixTranslation(2.25f, 0.05f, 0.0f) * XMMatrixRotationY(t) * XMMatrixTranslation(0.2f, 0.1f, 0.0f));
+    XMStoreFloat4x4(&_worldMoonEarth, XMMatrixScaling(0.1, 0.1, 0.1) * XMMatrixRotationY(t) * XMMatrixTranslation(2.25f, 0.05f, 0.0f) * 
+        XMMatrixRotationY(t) * XMMatrixTranslation(0.2f, 0.1f, 0.0f));
 
     // Moon for Mars
-    XMStoreFloat4x4(&_worldMoonMars, XMMatrixScaling(0.1, 0.1, 0.1) * XMMatrixRotationY(t) * XMMatrixTranslation(1.3f, 0.0f, 0.0f) * XMMatrixRotationY(t) * XMMatrixTranslation(0.25f, 0.2f, 0.0f));
+    XMStoreFloat4x4(&_worldMoonMars, XMMatrixScaling(0.1, 0.1, 0.1) * XMMatrixRotationY(t) * XMMatrixTranslation(1.3f, 0.0f, 0.0f) * 
+        XMMatrixRotationY(t) * XMMatrixTranslation(0.25f, 0.2f, 0.0f));
+
+    // Animate the pyramid
+    XMStoreFloat4x4(&_worldPyramid, XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(0.0f, -1.0f, 0.0f));
 }
 
 void Application::Draw()
@@ -617,12 +670,10 @@ void Application::Draw()
     //
     //   Update variables
     //
-    ConstantBuffer cb;
-	cb.mWorld = XMMatrixTranspose(world);
-	cb.mView = XMMatrixTranspose(view);
-	cb.mProjection = XMMatrixTranspose(projection);
-
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_cb.mWorld = XMMatrixTranspose(world);
+	_cb.mView = XMMatrixTranspose(view);
+	_cb.mProjection = XMMatrixTranspose(projection);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
 
     //
     // Renders the first object
@@ -630,6 +681,7 @@ void Application::Draw()
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferSun, &stride, &offset);
+    _pImmediateContext->IASetIndexBuffer(_pIndexBufferCube, DXGI_FORMAT_R16_UINT, 0);
 	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
 	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
@@ -640,18 +692,18 @@ void Application::Draw()
     // Draw the second Object
     //
     world = XMLoadFloat4x4(&_worldMars);
-    cb.mWorld = XMMatrixTranspose(world);
+    _cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferMars, &stride, &offset);
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
     //
     // Draw the third Object
     //
     world = XMLoadFloat4x4(&_worldEarth);
-    cb.mWorld = XMMatrixTranspose(world);
+    _cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferEarth, &stride, &offset);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
     //
@@ -660,17 +712,29 @@ void Application::Draw()
 
     // Moon for Earth
     world = XMLoadFloat4x4(&_worldMoonEarth);
-    cb.mWorld = XMMatrixTranspose(world);
+    _cb.mWorld = XMMatrixTranspose(world);
+
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferMoon, &stride, &offset);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
 
     // Moon for Mars
 	world = XMLoadFloat4x4(&_worldMoonMars);
-    cb.mWorld = XMMatrixTranspose(world);
+    _cb.mWorld = XMMatrixTranspose(world);
 
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
     _pImmediateContext->DrawIndexed(36, 0, 0);
+
+    //
+    // Draw the pyramid
+    //
+    world = XMLoadFloat4x4(&_worldPyramid);
+    _cb.mWorld = XMMatrixTranspose(world);
+
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBufferPyramid, &stride, &offset);
+    _pImmediateContext->IASetIndexBuffer(_pIndexBufferPyramid, DXGI_FORMAT_R16_UINT, 0);
+    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &_cb, 0, 0);
+    _pImmediateContext->DrawIndexed(18, 0, 0);
 
     //
     // Present our back buffer to our front buffer
