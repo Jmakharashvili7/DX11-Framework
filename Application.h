@@ -11,8 +11,8 @@ using namespace DirectX;
 
 struct SimpleVertex
 {
-    XMFLOAT3 Pos;
-    XMFLOAT4 Color;
+    XMFLOAT3 pos;
+    XMFLOAT3 normal;
 };
 
 struct ConstantBuffer

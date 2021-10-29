@@ -157,14 +157,14 @@ HRESULT Application::InitVertexBuffer()
     //
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
 
     D3D11_BUFFER_DESC bd;
@@ -189,14 +189,14 @@ HRESULT Application::InitVertexBuffer()
 
 	SimpleVertex verticesMars[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
 
 	ZeroMemory(&bd, sizeof(bd));
@@ -218,14 +218,14 @@ HRESULT Application::InitVertexBuffer()
     //
     SimpleVertex verticesEarth[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
 
 	ZeroMemory(&bd, sizeof(bd));
@@ -247,14 +247,14 @@ HRESULT Application::InitVertexBuffer()
     //
     SimpleVertex verticesMoon[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
 
 	ZeroMemory(&bd, sizeof(bd));
@@ -276,11 +276,11 @@ HRESULT Application::InitVertexBuffer()
     //
     SimpleVertex verticesPyramid[] =
     {
-        {XMFLOAT3( 0.5f, 0.0f, -0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 0
-        {XMFLOAT3( 0.5f, 0.0f,  0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 1
-        {XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 2
-        {XMFLOAT3(-0.5f, 0.0f,  0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)}, // 3
-        {XMFLOAT3( 0.0f, 0.5f,  0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)}, // 4 This is the tip
+        {XMFLOAT3( 0.5f, 0.0f, -0.5f) }, // 0
+        {XMFLOAT3( 0.5f, 0.0f,  0.5f) }, // 1
+        {XMFLOAT3(-0.5f, 0.0f, -0.5f) }, // 2
+        {XMFLOAT3(-0.5f, 0.0f,  0.5f) }, // 3
+        {XMFLOAT3( 0.0f, 0.5f,  0.0f) }, // 4 This is the tip
     };
 
     ZeroMemory(&bd, sizeof(bd));
@@ -305,7 +305,7 @@ HRESULT Application::InitIndexBuffer()
 	HRESULT hr;
 
     // Create index buffer
-    WORD indicesCube[] =
+    UINT indicesCube[] =
     {
         0, 1, 2, 0, 2, 3, // Top
 		0, 4, 5, 0, 5, 1, // Bottom
@@ -319,7 +319,7 @@ HRESULT Application::InitIndexBuffer()
 	ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * 36;     
+    bd.ByteWidth = sizeof(UINT) * 36;     
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -331,7 +331,7 @@ HRESULT Application::InitIndexBuffer()
     if (FAILED(hr))
         return hr;
 
-    WORD indicesPyramid[] =
+    UINT indicesPyramid[] =
     {
         3, 0, 1,
         3, 2, 0,
@@ -344,7 +344,7 @@ HRESULT Application::InitIndexBuffer()
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * 18;
+    bd.ByteWidth = sizeof(UINT) * 18;
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
     bd.CPUAccessFlags = 0;
 

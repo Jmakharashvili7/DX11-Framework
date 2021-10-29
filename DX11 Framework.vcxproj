@@ -372,7 +372,9 @@
       </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Text Include="Diary.txt" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
@@ -381,6 +383,7 @@
     <None Include="DX11 Framework.fx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Math3D.h" />
     <ClInclude Include="Application.h" />
     <CLInclude Include="resource.h" />
     <ResourceCompile Include="DX11 Framework.rc" />

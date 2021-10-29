@@ -1,0 +1,23 @@
+Week 1:
+
+Downloaded the framework and spent majority of the time familiarizing myself with the framework. It was quite daunting to see how much of a diffrence there is drawing
+a single triangle in DirectX compared to OpenGL. There's around 500 lines of code just to draw a single triangle. Of course using modern OpenGL is also a similar experience
+but OpenGL still feels like its a lot more begginer friendly. I was not able to attend class due to my self isolation so I had to do a lot of online researching to figure out
+how some of the code worked but I have a good understanding of the code now.
+
+Week 2:
+
+Setup a small solar system with a yellow sun in the middle and two planets of diffrent sizes rotating around the sun. The two planets have small white moons rotating around them.
+I learned a lot and got a deeper understanding of how matrix transformations work and how changing the order of transformations effects the object. I had to setup diffrent vertex 
+buffers for every object as they all had diffrent colors and sizes and it was more practical to specify size in the vertex buffer rather than scale them in the update method. In the
+future planning on setting up a 100 asteroid belt bonus task from today using instancing. After this week I decided to dedicate my project to this solar system theme. I will be making
+either a sci-fi game or a simulator where I'll have a solar system runnning that will be as realistic as I can get it.
+
+Week 3:
+
+Did a lot of experimenting with the shader for the most of the session. Added a pyramid as well under the solar system for the time being. I also decided to make a diary in the actual code as
+a txt file as GitHub will save it and it's good to fill out every week after work. I also will be updating my twitter with weekly updates about how the project is progressing. Shaders are
+not easy but they're not as hard as I thought either. I will be spending the week trying to learn more about the shaders.
+
+Week 4:
+

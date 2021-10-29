@@ -19,6 +19,7 @@
     <CLInclude Include="resource.h">
       <Filter>Resource Files</Filter>
     </CLInclude>
+    <ClInclude Include="Math3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">
@@ -29,5 +30,8 @@
     <None Include="DX11 Framework.fx">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Diary.txt" />
   </ItemGroup>
 </Project>
