@@ -25,3 +25,10 @@ Started working on normals. I am trying to implement vector normal avaraging acc
 setting up normals and thus I will try my best to finish it before the next tutorial. I will have to implement a mesh class that will contain all the indices, vertices, triangle count, vertex count,
 etc. I also might have to implement my own vector class for math purposes, but it depends on how it will work once I have implemented the mesh class. Since my current output is a blank screen heres my
 tweet on my account which shows my last working output. https://twitter.com/JMakharashvili/status/1453736737876758531?s=20
+
+Week 5:
+
+Implemented normal avaraging and tried to merge vertex and index buffer into one method. Currently the engine compiles but it does not draw properly.
+Judging from the output theres a problem with either the index buffer or vertex buffer and I will be trying to get this fixed before next week. Otherwise
+Lighting has been implemented properly and just need to fix the bug. The normal avaraging is in Math3D.h and takes in an index buffer, a vector buffer,
+and the triangle count.

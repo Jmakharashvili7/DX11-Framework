@@ -20,6 +20,7 @@
       <Filter>Resource Files</Filter>
     </CLInclude>
     <ClInclude Include="Math3D.h" />
+    <ClInclude Include="structs.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">
@@ -30,6 +31,8 @@
     <None Include="DX11 Framework.fx">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="LICENSE" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Diary.txt" />

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "b8ff81b5-9b26-4931-8353-07795fdc4043": {
+      "ProjectGuid": "b8ff81b5-9b26-4931-8353-07795fdc4043",
+      "DisplayName": "DX11 Framework",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Math3D.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -128,7 +129,7 @@ HRESULT Application::InitShadersAndInputLayout()
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -149,12 +150,17 @@ HRESULT Application::InitShadersAndInputLayout()
 
 HRESULT Application::InitVertexBuffer()
 {
-	HRESULT hr; // stands for hex result
+    return S_OK;
+}
 
+HRESULT Application::InitObjects()
+{
+	HRESULT hr; // stands for hex result
 
     //
     // Create vertex buffer for sun
     //
+
     SimpleVertex vertices[] =
     {
         { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
@@ -166,6 +172,27 @@ HRESULT Application::InitVertexBuffer()
         { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
         { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
+
+    
+    // Create index buffer
+    UINT indicesCube[] =
+    {
+        0, 1, 2, 0, 2, 3, // Top
+		0, 4, 5, 0, 5, 1, // Bottom
+		1, 5, 6, 1, 6, 2, // Left
+		2, 6, 7, 2, 7, 3, // Right
+		3, 7, 4, 3, 4, 0, // Front
+		4, 7, 6, 4, 6, 5  // Back
+    };
+
+    vertices[0].normal = { };
+    vertices[1].normal = { };
+    vertices[2].normal = { };
+    vertices[3].normal = { };
+    vertices[4].normal = { };
+    vertices[5].normal = { };
+    vertices[6].normal = { };
+    vertices[7].normal = { };
 
     D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -199,6 +226,8 @@ HRESULT Application::InitVertexBuffer()
         { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
 
+	Math3D::NormalAvarage(verticesMars, indicesCube, 12);
+
 	ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.ByteWidth = sizeof(SimpleVertex) * 8;
@@ -227,6 +256,8 @@ HRESULT Application::InitVertexBuffer()
         { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
         { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
+
+	Math3D::NormalAvarage(verticesEarth, indicesCube, 12);
 
 	ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -257,6 +288,8 @@ HRESULT Application::InitVertexBuffer()
         { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
     };
 
+	Math3D::NormalAvarage(verticesMoon, indicesCube, 12);
+
 	ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.ByteWidth = sizeof(SimpleVertex) * 8;
@@ -283,6 +316,18 @@ HRESULT Application::InitVertexBuffer()
         {XMFLOAT3( 0.0f, 0.5f,  0.0f) }, // 4 This is the tip
     };
 
+	UINT indicesPyramid[] =
+    {
+        3, 0, 1,
+        3, 2, 0,
+        0, 4, 1,
+        0, 2, 4,
+        4, 3, 1,
+        3, 4, 2
+    };
+
+    Math3D::NormalAvarage(verticesMoon, indicesPyramid, 6);
+
     ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.ByteWidth = sizeof(SimpleVertex) * 5;
@@ -297,25 +342,10 @@ HRESULT Application::InitVertexBuffer()
     if (FAILED(hr))
         return hr;
 
-	return S_OK;
-}
+    ///
+    /// Initialize the Index buffers
+    ///
 
-HRESULT Application::InitIndexBuffer()
-{
-	HRESULT hr;
-
-    // Create index buffer
-    UINT indicesCube[] =
-    {
-        0, 1, 2, 0, 2, 3, // Top
-		0, 4, 5, 0, 5, 1, // Bottom
-		1, 5, 6, 1, 6, 2, // Left
-		2, 6, 7, 2, 7, 3, // Right
-		3, 7, 4, 3, 4, 0, // Front
-		4, 7, 6, 4, 6, 5  // Back
-    };
-
-	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -323,23 +353,12 @@ HRESULT Application::InitIndexBuffer()
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = indicesCube;
     hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBufferCube);
 
     if (FAILED(hr))
         return hr;
-
-    UINT indicesPyramid[] =
-    {
-        3, 0, 1,
-        3, 2, 0,
-        0, 4, 1,
-        0, 2, 4,
-        4, 3, 1,
-        3, 4, 2
-    };
 
     ZeroMemory(&bd, sizeof(bd));
 
@@ -355,7 +374,24 @@ HRESULT Application::InitIndexBuffer()
     if (FAILED(hr))
         return hr;
 
+    // Light direction from surface (XYZ)
+	_lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
+    _cb.LightVecW = _lightDirection;
+
+    // Diffuse material properties (RGBA)
+    _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    _cb.DiffuseMtrl = _diffuseMaterial;
+
+    // Diffuse light color (RGBA)
+    _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _cb.DiffuseLight = _diffuseLight;
+
 	return S_OK;
+}
+
+HRESULT Application::InitIndexBuffer()
+{
+        return S_OK;
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -531,9 +567,7 @@ HRESULT Application::InitDevice()
 
 	InitShadersAndInputLayout();
 
-	InitVertexBuffer();
-
-	InitIndexBuffer();
+	InitObjects();
 
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -595,7 +629,6 @@ void Application::Update()
     {
         t += (float) XM_PI * 0.0125f;
         t2 += (float) XM_PI * 0.0125f;
-    	_cb.time = t;
     }
     else
     {
