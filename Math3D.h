@@ -14,7 +14,7 @@ namespace Math3D {
 		out = XMVector3Normalize(out);
 	}
 
-	void NormalAvarage(SimpleVertex vertices[], const UINT indices[], UINT numTriangles)
+	void NormalAvarage(SimpleVertex vertices[], const WORD indices[], UINT numTriangles)
 	{
 		// For each triangle in the mesh:
 		for (UINT i = 0; i < numTriangles; ++i)

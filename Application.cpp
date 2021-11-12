@@ -175,7 +175,7 @@ HRESULT Application::InitObjects()
 
     
     // Create index buffer
-    UINT indicesCube[] =
+    WORD indicesCube[] =
     {
         0, 1, 2, 0, 2, 3, // Top
 		0, 4, 5, 0, 5, 1, // Bottom
@@ -185,7 +185,7 @@ HRESULT Application::InitObjects()
 		4, 7, 6, 4, 6, 5  // Back
     };
 
-    //Math3D::NormalAvarage(vertices, indicesCube, 12);
+    Math3D::NormalAvarage(vertices, indicesCube, 12);
 
     D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -309,7 +309,7 @@ HRESULT Application::InitObjects()
         {XMFLOAT3( 0.0f, 0.5f,  0.0f) }, // 4 This is the tip
     };
 
-	UINT indicesPyramid[] =
+	WORD indicesPyramid[] =
     {
         3, 0, 1,
         3, 2, 0,
@@ -342,7 +342,7 @@ HRESULT Application::InitObjects()
 	ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(UINT) * 36;     
+    bd.ByteWidth = sizeof(WORD) * 36;     
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -368,7 +368,7 @@ HRESULT Application::InitObjects()
         return hr;
 
     // Light direction from surface (XYZ)
-	_lightDirection = XMFLOAT3(0, 0, -2.0f);
+	_lightDirection = XMFLOAT3(1, 1, 2.0f);
     _cb.LightVecW = _lightDirection;
 
     // Diffuse material properties (RGBA)

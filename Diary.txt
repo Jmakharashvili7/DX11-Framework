@@ -32,3 +32,8 @@ Implemented normal avaraging and tried to merge vertex and index buffer into one
 Judging from the output theres a problem with either the index buffer or vertex buffer and I will be trying to get this fixed before next week. Otherwise
 Lighting has been implemented properly and just need to fix the bug. The normal avaraging is in Math3D.h and takes in an index buffer, a vector buffer,
 and the triangle count.
+
+Week 6: 
+
+I have finally been able to resolve the normal issue which was changing WORD buffer to UINT buffer. The issue has been haunting me for 3 weeks now but I have finallyt fixed it
+and properly updated the lighting model to work well. Next goal will be to catch up to all the tutorials over the weekend.

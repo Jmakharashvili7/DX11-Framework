@@ -17,4 +17,8 @@ struct ConstantBuffer
 	XMFLOAT4 DiffuseMtrl;
 	XMFLOAT4 DiffuseLight;
 	XMFLOAT3 LightVecW;
+	XMFLOAT4 SpecularMaterial;
+	XMFLOAT4 SpecularLight;
+	float	 SpecularPower;
+	XMFLOAT3 EyePosW; // camera position in world space
 };

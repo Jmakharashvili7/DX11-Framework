@@ -15,6 +15,10 @@ cbuffer ConstantBuffer : register( b0 )
     float4 DiffuseMtrl;
     float4 DiffuseLight;
     float3 LightVecW;
+    float4 SpecularMtrl;
+    float4 SpecularLight;
+    float SpecularPower;
+    float3 EyePosW; // camera position in world space
 }
 
 //--------------------------------------------------------------------------------------
@@ -48,7 +52,7 @@ VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
 
     // Compute Colour using Diffuse lighting only
     float diffuseAmount = max(dot(LightVecW, normalW), 0.0f);
-    output.Color.rgb = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
+    output.Color.rgb = 0.05 + diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
     output.Color.a = DiffuseMtrl.a;
 
     return output;
@@ -60,6 +64,5 @@ VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
 //--------------------------------------------------------------------------------------
 float4 PS( VS_OUTPUT input ) : SV_Target
 {
-    return float4(1, 1, 1, 1);
-   // return input.Color;
+   return input.Color;
 }
