@@ -163,14 +163,14 @@ HRESULT Application::InitObjects()
 
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ),XMFLOAT3(0,0,0) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ),XMFLOAT3(0,0,0) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ),XMFLOAT3(0,0,0) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ),XMFLOAT3(0,0,0) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ),XMFLOAT3(0,0,0) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ),XMFLOAT3(0,0,0) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ),XMFLOAT3(0,0,0) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ),XMFLOAT3(0,0,0) }, // 7
     };
 
     
@@ -185,14 +185,7 @@ HRESULT Application::InitObjects()
 		4, 7, 6, 4, 6, 5  // Back
     };
 
-    vertices[0].normal = { };
-    vertices[1].normal = { };
-    vertices[2].normal = { };
-    vertices[3].normal = { };
-    vertices[4].normal = { };
-    vertices[5].normal = { };
-    vertices[6].normal = { };
-    vertices[7].normal = { };
+    //Math3D::NormalAvarage(vertices, indicesCube, 12);
 
     D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -326,7 +319,7 @@ HRESULT Application::InitObjects()
         3, 4, 2
     };
 
-    Math3D::NormalAvarage(verticesMoon, indicesPyramid, 6);
+    Math3D::NormalAvarage(verticesPyramid, indicesPyramid, 5);
 
     ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -375,7 +368,7 @@ HRESULT Application::InitObjects()
         return hr;
 
     // Light direction from surface (XYZ)
-	_lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
+	_lightDirection = XMFLOAT3(0, 0, -2.0f);
     _cb.LightVecW = _lightDirection;
 
     // Diffuse material properties (RGBA)

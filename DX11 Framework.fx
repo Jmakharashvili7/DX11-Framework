@@ -60,5 +60,6 @@ VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
 //--------------------------------------------------------------------------------------
 float4 PS( VS_OUTPUT input ) : SV_Target
 {
-    return input.Color;
+    return float4(1, 1, 1, 1);
+   // return input.Color;
 }

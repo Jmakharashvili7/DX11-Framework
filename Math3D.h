@@ -37,23 +37,21 @@ namespace Math3D {
 			// This triangle shares the following three vertices,
 			// so add this face normal into the average of these
 			// vertex normals.
-			XMFLOAT3 normal0, normal1, normal2;
+			XMFLOAT3 normal;
 
-			XMStoreFloat3(&normal0, faceNormal);
-			XMStoreFloat3(&normal1, faceNormal);
-			XMStoreFloat3(&normal2, faceNormal);
+			XMStoreFloat3(&normal, faceNormal);
 
-			vertices[i0].normal.x += normal0.x;
-			vertices[i0].normal.y += normal0.y;
-			vertices[i0].normal.z += normal0.z;
-
-			vertices[i1].normal.x += normal1.x;
-			vertices[i1].normal.y += normal1.y;
-			vertices[i1].normal.z += normal1.z;
-
-			vertices[i2].normal.x += normal2.x;
-			vertices[i2].normal.y += normal2.y;
-			vertices[i2].normal.z += normal2.z;
+			vertices[i0].normal.x += normal.x;
+			vertices[i0].normal.y += normal.y;
+			vertices[i0].normal.z += normal.z;
+									 
+			vertices[i1].normal.x += normal.x;
+			vertices[i1].normal.y += normal.y;
+			vertices[i1].normal.z += normal.z;
+									 
+			vertices[i2].normal.x += normal.x;
+			vertices[i2].normal.y += normal.y;
+			vertices[i2].normal.z += normal.z;
 		}
 
 		// For each vertex v, we have summed the face normals of all
