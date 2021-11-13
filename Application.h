@@ -8,45 +8,45 @@
 
 #include "resource.h"
 #include "structs.h"
+#include "BaseObject.h"
 
 using namespace DirectX;
 
 class Application
 {
 private:
-	HINSTANCE               _hInst;
-	HWND                    _hWnd;
-	D3D_DRIVER_TYPE         _driverType;
-	D3D_FEATURE_LEVEL       _featureLevel;
-	ID3D11Device           *_pd3dDevice;
-	ID3D11DeviceContext    *_pImmediateContext;
-	IDXGISwapChain         *_pSwapChain;
-	ID3D11RenderTargetView *_pRenderTargetView;
-	ID3D11RasterizerState  *_wireFrame;
-	ID3D11VertexShader     *_pVertexShader;
-	ID3D11PixelShader      *_pPixelShader;
-	ID3D11InputLayout      *_pVertexLayout;
-	ID3D11Buffer           *_pVertexBufferSun, *_pVertexBufferMars, *_pVertexBufferEarth, *_pVertexBufferMoon, *_pVertexBufferPyramid;
-	ID3D11Buffer           *_pIndexBufferCube, *_pIndexBufferPyramid;
-	ID3D11Buffer           *_pConstantBuffer;
-	ID3D11DepthStencilView *_depthStencilView;
-	ID3D11Texture2D*		_depthStencilBuffer;
-	XMFLOAT4X4              _world, _worldMars, _worldEarth, _worldMoonEarth, _worldMoonMars, _worldPyramid;
-	XMFLOAT4X4              _view;
-	XMFLOAT4X4              _projection;
+	HINSTANCE               m_hInst;
+	HWND                    m_hWnd;
+	D3D_DRIVER_TYPE         m_driverType;
+	D3D_FEATURE_LEVEL       m_featureLevel;
+	ID3D11Device           *m_pd3dDevice;
+	ID3D11DeviceContext    *m_ImmediateContext;
+	IDXGISwapChain         *m_SwapChain;
+	ID3D11RenderTargetView *m_RenderTargetView;
+	ID3D11RasterizerState  *m_WireFrame;
+	ID3D11VertexShader     *m_VertexShader;
+	ID3D11PixelShader      *m_PixelShader;
+	ID3D11InputLayout      *m_VertexLayout;
+	ID3D11Buffer           *m_ConstantBuffer;
+	ID3D11DepthStencilView *m_DepthStencilView;
+	ID3D11Texture2D*		m_DepthStencilBuffer;
+	XMFLOAT4X4              m_world;
+	XMFLOAT4X4              m_view;
+	XMFLOAT4X4              m_projection;
 	// lighting
-	XMFLOAT3				_lightDirection;
-	XMFLOAT4				_diffuseMaterial, _diffuseLight;
-	ConstantBuffer			_cb;
+	XMFLOAT3				m_LightDirection;
+	XMFLOAT4				m_DiffuseMaterial, m_DiffuseLight;
+	ConstantBuffer			m_cb;
+	// objects
+	BaseObject			   *m_Sun, *m_Mars, *m_Earth, *m_MoonEarth, *m_MoonMars, *m_Pyramid;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
+	void InitLights();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
-	HRESULT InitVertexBuffer();
-	HRESULT InitIndexBuffer();
 	HRESULT InitObjects();
 
 	UINT _WindowHeight;

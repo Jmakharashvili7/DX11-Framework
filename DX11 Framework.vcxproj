@@ -377,7 +377,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
+    <ClCompile Include="Math3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DX11 Framework.fx" />
@@ -385,6 +387,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Math3D.h" />
     <ClInclude Include="Application.h" />
     <CLInclude Include="resource.h" />

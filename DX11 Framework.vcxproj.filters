@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="Math3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -21,6 +23,7 @@
     </CLInclude>
     <ClInclude Include="Math3D.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="BaseObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

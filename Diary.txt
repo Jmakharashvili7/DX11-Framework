@@ -36,4 +36,7 @@ and the triangle count.
 Week 6: 
 
 I have finally been able to resolve the normal issue which was changing WORD buffer to UINT buffer. The issue has been haunting me for 3 weeks now but I have finallyt fixed it
-and properly updated the lighting model to work well. Next goal will be to catch up to all the tutorials over the weekend.
+and properly updated the lighting model to work well. Next goal will be to catch up to all the tutorials over the weekend. Update 2: I have finally added a BaseObject class which
+makes the code a lot easier to edit and use. If you need to render and object its one Render() call and you make an object in one call by passing all the information it needs to setup
+the index and vertex buffers and normals. The base object is very flexible and can take any real object. The code is much smaller now which is always a good thing. Once I make game
+objects they will inherit from the BaseObject as it will only contain what every game object needs. Next goal is to catch up to the tutorials.
