@@ -78,6 +78,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
+    m_cb.EyePosW.x = 0.0f;
+    m_cb.EyePosW.y = 0.0f;
+    m_cb.EyePosW.z = -3.0f;
+
 	XMStoreFloat4x4(&m_view, XMMatrixLookAtLH(Eye, At, Up));
 
     // Initialize the projection matrix
@@ -161,18 +165,15 @@ HRESULT Application::InitObjects()
 
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ),XMFLOAT3(0,0,0) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ),XMFLOAT3(0,0,0) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ),XMFLOAT3(0,0,0) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ),XMFLOAT3(0,0,0) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ),XMFLOAT3(0,0,0) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ),XMFLOAT3(0,0,0) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ),XMFLOAT3(0,0,0) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ),XMFLOAT3(0,0,0) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0) }, // 7
     };
-
-    
-    // Create index buffer
     WORD indicesCube[] =
     {
         0, 1, 2, 0, 2, 3, // Top
@@ -204,8 +205,10 @@ HRESULT Application::InitObjects()
     };
     
     m_MoonEarth = new BaseObject(m_pd3dDevice, verticesMoon, indicesCube, hr, 36, 8);
+    if (FAILED(hr))
+        return hr;
+     
     m_MoonMars = new BaseObject(m_pd3dDevice, verticesMoon, indicesCube, hr, 36, 8);
-
     if (FAILED(hr))
         return hr;
 
@@ -226,6 +229,8 @@ HRESULT Application::InitObjects()
     };
 
     m_Mars = new BaseObject(m_pd3dDevice, verticesMars, indicesCube, hr, 36, 8);
+    if (FAILED(hr))
+        return hr;
 
 	//
     // Vertex buffer for Earth
@@ -243,7 +248,8 @@ HRESULT Application::InitObjects()
     };
 
 	m_Earth = new BaseObject(m_pd3dDevice, verticesEarth, indicesCube, hr, 36, 8);
-
+    if (FAILED(hr))
+        return hr;
     //
     // Vertex buffer for the pyramid
     //
@@ -267,7 +273,6 @@ HRESULT Application::InitObjects()
     };
 
     m_Pyramid = new BaseObject(m_pd3dDevice, verticesPyramid, indicesPyramid, hr, 18, 5);
-
     if (FAILED(hr))
         return hr;
 
@@ -287,8 +292,13 @@ void Application::InitLights()
     // Diffuse light color (RGBA)
     m_DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     m_cb.DiffuseLight = m_DiffuseLight;
-}
 
+    // Specular light info
+    m_cb.SpecularMaterial = {0.8f, 0.8f, 0.8f, 1.0f};
+    m_cb.SpecularLight = {0.5f, 0.5f, 0.5f, 1.0f};
+    m_cb.SpecularPower = 10.0f;
+}
+ 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 {
     // Register class

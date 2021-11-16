@@ -30,14 +30,14 @@ private:
 	ID3D11Buffer           *m_ConstantBuffer;
 	ID3D11DepthStencilView *m_DepthStencilView;
 	ID3D11Texture2D*		m_DepthStencilBuffer;
-	XMFLOAT4X4              m_world;
-	XMFLOAT4X4              m_view;
-	XMFLOAT4X4              m_projection;
-	// lighting
+	// View Matrices
+	XMFLOAT4X4              m_world, m_view, m_projection;
+	// Lighting variables
 	XMFLOAT3				m_LightDirection;
 	XMFLOAT4				m_DiffuseMaterial, m_DiffuseLight;
+	// Consant buffer
 	ConstantBuffer			m_cb;
-	// objects
+	// Game objects
 	BaseObject			   *m_Sun, *m_Mars, *m_Earth, *m_MoonEarth, *m_MoonMars, *m_Pyramid;
 
 private:
