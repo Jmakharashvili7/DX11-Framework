@@ -87,6 +87,21 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     // Initialize the projection matrix
 	XMStoreFloat4x4(&m_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
 
+    // Create the sample state
+    D3D11_SAMPLER_DESC sampDesc;
+
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    m_pd3dDevice->CreateSamplerState(&sampDesc, &m_pSamplerLinear);
+
 	return S_OK;
 }
 
@@ -137,6 +152,7 @@ HRESULT Application::InitShadersAndInputLayout()
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -165,14 +181,14 @@ HRESULT Application::InitObjects()
 
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 7
     };
     WORD indicesCube[] =
     {
@@ -194,14 +210,14 @@ HRESULT Application::InitObjects()
     //
     SimpleVertex verticesMoon[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
+        { XMFLOAT3(-0.25f, 0.5f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 0
+        { XMFLOAT3(-0.25f, 0.5f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 1
+        { XMFLOAT3( 0.25f, 0.5f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 2
+        { XMFLOAT3( 0.25f, 0.5f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 3
+        { XMFLOAT3(-0.25f, 0.0f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 4
+        { XMFLOAT3(-0.25f, 0.0f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 5
+        { XMFLOAT3( 0.25f, 0.0f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 6
+        { XMFLOAT3( 0.25f, 0.0f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 7
     };
     
     m_MoonEarth = new BaseObject(m_pd3dDevice, verticesMoon, indicesCube, hr, 36, 8);
@@ -218,14 +234,14 @@ HRESULT Application::InitObjects()
 
 	SimpleVertex verticesMars[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
+        { XMFLOAT3(-0.25f, 0.5f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 0
+        { XMFLOAT3(-0.25f, 0.5f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 1
+        { XMFLOAT3( 0.25f, 0.5f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 2
+        { XMFLOAT3( 0.25f, 0.5f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 3
+		{ XMFLOAT3(-0.25f, 0.0f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 4
+		{ XMFLOAT3(-0.25f, 0.0f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 5
+        { XMFLOAT3( 0.25f, 0.0f,  0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 6
+        { XMFLOAT3( 0.25f, 0.0f, -0.25f), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 7
     };
 
     m_Mars = new BaseObject(m_pd3dDevice, verticesMars, indicesCube, hr, 36, 8);
@@ -237,14 +253,14 @@ HRESULT Application::InitObjects()
     //
     SimpleVertex verticesEarth[] =
     {
-        { XMFLOAT3( -0.25f, 0.5f, -0.25f ) }, // 0
-        { XMFLOAT3( -0.25f, 0.5f,  0.25f ) }, // 1
-        { XMFLOAT3(  0.25f, 0.5f,  0.25f ) }, // 2
-        { XMFLOAT3(  0.25f, 0.5f, -0.25f ) }, // 3
-		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ) }, // 4
-		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ) }, // 5
-        { XMFLOAT3(  0.25f, 0.0f,  0.25f ) }, // 6
-        { XMFLOAT3(  0.25f, 0.0f, -0.25f ) }, // 7
+        { XMFLOAT3( -0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 0
+        { XMFLOAT3( -0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 1
+        { XMFLOAT3(  0.25f, 0.5f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 2
+        { XMFLOAT3(  0.25f, 0.5f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(0, 0) }, // 3
+		{ XMFLOAT3( -0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 4
+		{ XMFLOAT3( -0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 5
+        { XMFLOAT3(  0.25f, 0.0f,  0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 6
+        { XMFLOAT3(  0.25f, 0.0f, -0.25f ), XMFLOAT3(0,0,0), XMFLOAT2(1, 1) }, // 7
     };
 
 	m_Earth = new BaseObject(m_pd3dDevice, verticesEarth, indicesCube, hr, 36, 8);
@@ -255,11 +271,11 @@ HRESULT Application::InitObjects()
     //
     SimpleVertex verticesPyramid[] =
     {
-        {XMFLOAT3( 0.5f, 0.0f, -0.5f) }, // 0
-        {XMFLOAT3( 0.5f, 0.0f,  0.5f) }, // 1
-        {XMFLOAT3(-0.5f, 0.0f, -0.5f) }, // 2
-        {XMFLOAT3(-0.5f, 0.0f,  0.5f) }, // 3
-        {XMFLOAT3( 0.0f, 0.5f,  0.0f) }, // 4 This is the tip
+        {XMFLOAT3( 0.5f, 0.0f, -0.5f), XMFLOAT3(0, 0, 0), XMFLOAT2(1, 1) }, // 0
+        {XMFLOAT3( 0.5f, 0.0f,  0.5f), XMFLOAT3(0, 0, 0), XMFLOAT2(1, 0) }, // 1
+        {XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT3(0, 0, 0), XMFLOAT2(0, 1) }, // 2
+        {XMFLOAT3(-0.5f, 0.0f,  0.5f), XMFLOAT3(0, 0, 0), XMFLOAT2(1, 1) }, // 3
+        {XMFLOAT3( 0.0f, 0.5f,  0.0f), XMFLOAT3(0, 0, 0), XMFLOAT2(0.5, 0.5) }, // 4 This is the tip
     };
 
 	WORD indicesPyramid[] =
@@ -286,17 +302,27 @@ void Application::InitLights()
     m_cb.LightVecW = m_LightDirection;
 
     // Diffuse material properties (RGBA)
-    m_DiffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    m_DiffuseMaterial = XMFLOAT4(0.1f, 0.1f, 0.8f, 1.0f);
     m_cb.DiffuseMtrl = m_DiffuseMaterial;
 
     // Diffuse light color (RGBA)
-    m_DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    m_DiffuseLight = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
     m_cb.DiffuseLight = m_DiffuseLight;
 
     // Specular light info
     m_cb.SpecularMaterial = {0.8f, 0.8f, 0.8f, 1.0f};
     m_cb.SpecularLight = {0.5f, 0.5f, 0.5f, 1.0f};
-    m_cb.SpecularPower = 10.0f;
+    m_cb.SpecularPower = 5.0f;
+}
+
+HRESULT Application::InitTextures()
+{
+    HRESULT hr = CreateDDSTextureFromFile(m_pd3dDevice, L"Crate_COLOR.dds", nullptr, &m_pTextureRV);
+
+    if (FAILED(hr))
+        return hr;
+
+    return S_OK;
 }
  
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -473,7 +499,10 @@ HRESULT Application::InitDevice()
 	InitShadersAndInputLayout();
 
 	InitObjects();
-    InitLights();
+
+	InitLights();
+
+	InitTextures();
 
     // Set primitive topology
     m_ImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -618,7 +647,9 @@ void Application::Draw()
 	m_ImmediateContext->VSSetShader(m_VertexShader, nullptr, 0);
 	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
     m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	m_ImmediateContext->PSSetShader(m_PixelShader, nullptr, 0);   
+	m_ImmediateContext->PSSetShader(m_PixelShader, nullptr, 0);
+    m_ImmediateContext->PSSetSamplers(0, 1, &m_pSamplerLinear);
+    m_ImmediateContext->PSSetShaderResources(0, 1, &m_pTextureRV);
 
     //
     // Render Object

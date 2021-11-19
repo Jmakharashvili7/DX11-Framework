@@ -378,6 +378,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="Math3D.cpp" />
   </ItemGroup>
@@ -388,15 +389,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Math3D.h" />
     <ClInclude Include="Application.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="structs.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
-  </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

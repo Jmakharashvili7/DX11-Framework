@@ -6,6 +6,7 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 
+#include "DDSTextureLoader.h"
 #include "resource.h"
 #include "structs.h"
 #include "BaseObject.h"
@@ -30,6 +31,9 @@ private:
 	ID3D11Buffer           *m_ConstantBuffer;
 	ID3D11DepthStencilView *m_DepthStencilView;
 	ID3D11Texture2D*		m_DepthStencilBuffer;
+	// Texture Resource View
+	ID3D11ShaderResourceView* m_pTextureRV = nullptr;
+	ID3D11SamplerState*		  m_pSamplerLinear = nullptr;
 	// View Matrices
 	XMFLOAT4X4              m_world, m_view, m_projection;
 	// Lighting variables
@@ -45,6 +49,7 @@ private:
 	HRESULT InitDevice();
 	void Cleanup();
 	void InitLights();
+	HRESULT InitTextures();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitObjects();

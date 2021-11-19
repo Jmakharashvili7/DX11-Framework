@@ -4,6 +4,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
+Texture2D txDiffuse : register( t0 );
+SamplerState samLinear : register( s0 );
+
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
@@ -15,18 +18,26 @@ cbuffer ConstantBuffer : register( b0 )
     float4 DiffuseMtrl;
     float4 DiffuseLight;
     float3 LightVecW;
+    float SpecularPower;
     float4 SpecularMtrl;
     float4 SpecularLight;
-    float SpecularPower;
     float3 EyePosW; // camera position in world space
 }
 
 //--------------------------------------------------------------------------------------
 struct VS_OUTPUT
 {
-    float4 Pos : SV_POSITION;
+    float4 Pos  : SV_POSITION;
     float3 Norm : NORMAL;
     float3 PosW : POSITION;
+};
+
+struct PS_INPUT
+{
+    float4 Pos  : SV_POSITION;
+    float3 Norm : NORMAL;
+    float3 PosW : POSITION;
+    float2 Tex  : TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
@@ -37,12 +48,13 @@ struct VS_OUTPUT
 // the normals to world space
 //------------------------------------------------------------------------------------
 
-VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
+PS_INPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL, float2 Tex : TEXCOORD0)
 {
-    VS_OUTPUT output = (VS_OUTPUT) 0;
+    PS_INPUT output = (PS_INPUT) 0;
 
     // output.Pos is currently the position in world space
     output.Pos = mul(Pos, World);
+    output.PosW = output.Pos;
     output.Pos = mul(output.Pos, View);
     output.Pos = mul(output.Pos, Projection);
 
@@ -50,7 +62,9 @@ VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
     // W component of vector is 0 as vectors cannot be translated
     float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
     output.Norm = normalize(normalW);
-
+    
+    output.Tex = Tex;
+    
     return output;
 }
 
@@ -58,12 +72,12 @@ VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL)
 //--------------------------------------------------------------------------------------
 // Pixel Shader - Calculate the color of the object per pixel using local illumiation model
 //--------------------------------------------------------------------------------------
-float4 PS( VS_OUTPUT input ) : SV_Target
+float4 PS( PS_INPUT input ) : SV_Target
 {  
     input.Norm = normalize(input.Norm);
 
     // Compute the vector from the vertex to the eye position. 
-    float3 toEye = normalize(EyePosW - input.Pos.xyz);
+    float3 toEye = normalize(EyePosW - input.PosW);
     
     // Compute Colour
     float diffuseAmount = max(dot(LightVecW, input.Norm), 0.0f);
@@ -72,11 +86,11 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     float3 r = reflect(-LightVecW, input.Norm);
 
     // Determine how much specular light makes it into the eye
-    float specularAmount = pow(max(dot(r, toEye), 0.0f), 100.0f);
+    float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
 
 
     // Compute diffuse and ambient lighting
-    float ambient = 0.05;
+    float ambient = 0.1;
     float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
 
     // Calculate specular lighting
@@ -87,6 +101,8 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     Color.rgb = ambient + diffuse + specular;
     Color.a = DiffuseMtrl.a;
 
+    float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
+    
     // return the color
-    return Color;
+    return textureColour;
 }
