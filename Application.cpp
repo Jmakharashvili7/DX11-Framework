@@ -73,19 +73,16 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	// Initialize the world matrix
 	XMStoreFloat4x4(&m_world, XMMatrixIdentity());
 
-    // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
-	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-    m_cb.EyePosW.x = 0.0f;
-    m_cb.EyePosW.y = 0.0f;
-    m_cb.EyePosW.z = -3.0f;
+    // Initialize the camera variables
+    XMFLOAT3 Eye = { 0.0f, 0.0f,-3.0f };
+	XMFLOAT3 At  = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 Up  = { 0.0f, 1.0f, 0.0f };
 
-	XMStoreFloat4x4(&m_view, XMMatrixLookAtLH(Eye, At, Up));
-
-    // Initialize the projection matrix
-	XMStoreFloat4x4(&m_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
+    // setup the camera
+    m_MainCamera = new Camera(Eye, At, Up, _WindowWidth, _WindowHeight, 0.1f, 100.0f);
+    XMStoreFloat3(&m_cb.EyePosW, m_MainCamera->GetPosition());
+	m_MainCamera->Update();
 
     // Create the sample state
     D3D11_SAMPLER_DESC sampDesc;
@@ -175,6 +172,8 @@ HRESULT Application::InitObjects()
 {
 	HRESULT hr = S_OK; // stands for hex result
 
+    m_Test = new BaseObjectOBJ(OBJLoader::Load("3D_Models/Blender/sphere.obj", m_pd3dDevice));
+
     //
     // Create vertex buffer for sun
     //
@@ -197,7 +196,7 @@ HRESULT Application::InitObjects()
 		1, 5, 6, 1, 6, 2, // Left
 		2, 6, 7, 2, 7, 3, // Right
 		3, 7, 4, 3, 4, 0, // Front
-		4, 7, 6, 4, 6, 5  // Back
+		4, 7, 6, 4, 6, 5  // Back 
     };
 
     m_Sun = new BaseObject(m_pd3dDevice, vertices, indicesCube, hr, 36, 8);
@@ -322,6 +321,11 @@ HRESULT Application::InitTextures()
     if (FAILED(hr))
         return hr;
 
+    hr  = CreateDDSTextureFromFile(m_pd3dDevice, L"Crate_NRM.dds", nullptr, &m_pTextureNrms);
+
+    if (FAILED(hr))
+        return hr;
+
     return S_OK;
 }
  
@@ -346,7 +350,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 
     // Create window
     m_hInst = hInstance;
-    RECT rc = {0, 0, 640, 480};
+    RECT rc = {0, 0, 1920, 1080};
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     m_hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
                          CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
@@ -562,6 +566,9 @@ void Application::Update()
     static float t = 0.0f;
     static float t2 = 0.0f;
 
+    // Update the camera
+    m_MainCamera->Update();
+
     if (m_driverType == D3D_DRIVER_TYPE_REFERENCE)
     {
         t += (float) XM_PI * 0.0125f;
@@ -587,8 +594,7 @@ void Application::Update()
     //
     // Animate Sun
     //
-    XMStoreFloat4x4(&m_Sun->m_world, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixRotationY(t2) *
-        XMMatrixTranslation(0.0f, -0.25f, 0.0f));
+    XMStoreFloat4x4(&m_Test->m_World, XMMatrixTranslation(0.0f, -0.25f, 0.0f));
 
     //
     // Animate Mars
@@ -630,8 +636,8 @@ void Application::Draw()
     // Setup the transformation matrices
     //
 	XMMATRIX world = XMLoadFloat4x4(&m_world);
-	XMMATRIX view = XMLoadFloat4x4(&m_view);
-	XMMATRIX projection = XMLoadFloat4x4(&m_projection);
+	XMMATRIX view = m_MainCamera->GetViewMatrix();
+	XMMATRIX projection = m_MainCamera->GetProjMatrix();
 
     //
     //   Update variables
@@ -650,22 +656,25 @@ void Application::Draw()
 	m_ImmediateContext->PSSetShader(m_PixelShader, nullptr, 0);
     m_ImmediateContext->PSSetSamplers(0, 1, &m_pSamplerLinear);
     m_ImmediateContext->PSSetShaderResources(0, 1, &m_pTextureRV);
+    m_ImmediateContext->CSSetShaderResources(1, 1, &m_pTextureNrms);
 
     //
     // Render Object
     //
-    m_Sun->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-   
+    m_Test->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+
+    //m_Sun->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    
     m_MoonEarth->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-
+    
     m_Earth->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-
+    
     m_Mars->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-
+    
     m_Pyramid->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-
+    
     m_MoonMars->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-
+    
     //
     // Present our back buffer to our front buffer
     //

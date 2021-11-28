@@ -5,6 +5,7 @@
 //--------------------------------------------------------------------------------------
 
 Texture2D txDiffuse : register( t0 );
+Texture2D txNrms : register( t1 );
 SamplerState samLinear : register( s0 );
 
 //--------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ struct PS_INPUT
 PS_INPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL, float2 Tex : TEXCOORD0)
 {
     PS_INPUT output = (PS_INPUT) 0;
-
+    
     // output.Pos is currently the position in world space
     output.Pos = mul(Pos, World);
     output.PosW = output.Pos;

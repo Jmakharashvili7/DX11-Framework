@@ -1,2 +1,21 @@
-﻿  Application.cpp
-  DX11 Framework.vcxproj -> C:\Users\m017735i\source\repos\DX11-Framework\Debug\DX11 Framework.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Msbuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (DX11 Framework-A007-09.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Application.cpp
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\Application.cpp(83,58): warning C4244: 'argument': conversion from 'UINT' to 'FLOAT', possible loss of data
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\Application.cpp(83,44): warning C4244: 'argument': conversion from 'UINT' to 'FLOAT', possible loss of data
+  BaseObject.cpp
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\BaseObject.cpp(41,2): warning C5205: delete of an abstract class 'ID3D11Buffer' that has a non-virtual destructor results in undefined behavior
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\d3d11.h(2400): message : see declaration of 'ID3D11Buffer'
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\BaseObject.cpp(42,2): warning C5205: delete of an abstract class 'ID3D11Buffer' that has a non-virtual destructor results in undefined behavior
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\d3d11.h(2400): message : see declaration of 'ID3D11Buffer'
+  BaseObjectOBJ.cpp
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\BaseObjectOBJ.cpp(17,10): warning C4189: 'offset': local variable is initialized but not referenced
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\BaseObjectOBJ.cpp(16,10): warning C4189: 'stride': local variable is initialized but not referenced
+  Camera.cpp
+  DDSTextureLoader.cpp
+  DX11 Framework.cpp
+C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\DX11 Framework.cpp(8,42): warning C4316: 'Application': object allocated on the heap may not be aligned 16
+  Math3D.cpp
+  OBJLoader.cpp
+  Generating Code...
+Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  DX11 Framework.vcxproj -> C:\Users\jmakh\OneDrive - Staffordshire University\Github\DX11-Framework\Debug\DX11 Framework.exe
