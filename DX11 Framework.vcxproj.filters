@@ -18,29 +18,73 @@
     <Filter Include="FileLoaders">
       <UniqueIdentifier>{eef37684-204c-4913-932b-6fc2a3d48462}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{a6f3d9db-0adc-4a44-a5fe-27b11a048d93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Levels">
+      <UniqueIdentifier>{d5b8a269-ab65-41b6-99ed-4e4178b7b602}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX11 Framework.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\BaseObject.cpp" />
-    <ClCompile Include="src\BaseObjectOBJ.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\DDSTextureLoader.cpp" />
-    <ClCompile Include="src\Math3D.cpp" />
-    <ClCompile Include="src\OBJLoader.cpp" />
+    <ClCompile Include="src\Application.cpp">
+      <Filter>MainFolder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseObject.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseObjectOBJ.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math3D.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OBJLoader.cpp">
+      <Filter>FileLoaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DDSTextureLoader.cpp">
+      <Filter>FileLoaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Application.h" />
-    <ClInclude Include="src\BaseObject.h" />
-    <ClInclude Include="src\BaseObjectOBJ.h" />
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\DDSTextureLoader.h" />
-    <ClInclude Include="src\Math3D.h" />
-    <ClInclude Include="src\OBJLoader.h" />
-    <ClInclude Include="src\resource.h" />
-    <ClInclude Include="src\structs.h" />
+    <ClInclude Include="src\Application.h">
+      <Filter>MainFolder</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseObject.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseObjectOBJ.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math3D.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\structs.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OBJLoader.h">
+      <Filter>FileLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DDSTextureLoader.h">
+      <Filter>FileLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

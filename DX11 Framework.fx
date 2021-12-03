@@ -19,7 +19,7 @@ cbuffer ConstantBuffer : register( b0 )
     float4 DiffuseMtrl;
     float4 DiffuseLight;
     float3 LightVecW;
-    float SpecularPower;
+    float  SpecularPower;
     float4 SpecularMtrl;
     float4 SpecularLight;
     float3 EyePosW; // camera position in world space
@@ -105,5 +105,5 @@ float4 PS( PS_INPUT input ) : SV_Target
     float4 textureColour = txDiffuse.Sample(samLinear, input.Tex);
     
     // return the color
-    return textureColour;
+    return Color;
 }

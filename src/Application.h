@@ -12,6 +12,7 @@
 #include "BaseObjectOBJ.h"
 #include "OBJLoader.h"
 #include "Camera.h"
+#include "BaseShader.h"
 
 using namespace DirectX;
 
@@ -23,16 +24,16 @@ private:
 	D3D_DRIVER_TYPE           m_driverType;
 	D3D_FEATURE_LEVEL         m_featureLevel;
 	ID3D11Device             *m_pd3dDevice;
-	ID3D11DeviceContext      *m_ImmediateContext;
-	IDXGISwapChain           *m_SwapChain;
-	ID3D11RenderTargetView   *m_RenderTargetView;
-	ID3D11RasterizerState    *m_WireFrame;
-	ID3D11VertexShader       *m_VertexShader;
-	ID3D11PixelShader        *m_PixelShader;
-	ID3D11InputLayout        *m_VertexLayout;
-	ID3D11Buffer             *m_ConstantBuffer;
-	ID3D11DepthStencilView   *m_DepthStencilView;
-	ID3D11Texture2D          *m_DepthStencilBuffer;
+	ID3D11DeviceContext      *m_pImmediateContext;
+	IDXGISwapChain           *m_pSwapChain;
+	ID3D11RenderTargetView   *m_pRenderTargetView;
+	ID3D11RasterizerState    *m_pWireFrame;
+	ID3D11InputLayout        *m_pVertexLayout;
+	ID3D11Buffer             *m_pConstantBuffer;
+	ID3D11DepthStencilView   *m_pDepthStencilView;
+	ID3D11Texture2D          *m_pDepthStencilBuffer;
+	// Shaders
+	BaseShader				 *m_pTemplateShader, m_pPlanetShader;
 	// Texture Resource View
 	ID3D11ShaderResourceView *m_pTextureRV = nullptr, *m_pTextureNrms = nullptr;
 	ID3D11SamplerState       *m_pSamplerLinear = nullptr;

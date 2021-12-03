@@ -31,19 +31,17 @@ Application::Application()
 	m_driverType = D3D_DRIVER_TYPE_NULL;
 	m_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	m_pd3dDevice = nullptr;
-	m_ImmediateContext = nullptr;
-	m_SwapChain = nullptr;
-	m_RenderTargetView = nullptr;
-	m_VertexShader = nullptr;
-	m_PixelShader = nullptr;
-	m_VertexLayout = nullptr;
+	m_pImmediateContext = nullptr;
+	m_pSwapChain = nullptr;
+	m_pRenderTargetView = nullptr;
+	m_pVertexLayout = nullptr;
     m_Sun = nullptr;
 	m_Mars = nullptr;
     m_Earth = nullptr;
     m_MoonMars = nullptr;
     m_MoonEarth = nullptr;
     m_Pyramid = nullptr;
-	m_ConstantBuffer = nullptr;
+	m_pConstantBuffer = nullptr;
 }
 
 Application::~Application()
@@ -106,44 +104,10 @@ HRESULT Application::InitShadersAndInputLayout()
 {
 	HRESULT hr;
 
-    // Compile the vertex shader
-    ID3DBlob* pVSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-	// Create the vertex shader
-	hr = m_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &m_VertexShader);
-
-	if (FAILED(hr))
-	{	
-		pVSBlob->Release();
-        return hr;
-	}
-
-	// Compile the pixel shader
-	ID3DBlob* pPSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-	// Create the pixel shader
-	hr = m_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &m_PixelShader);
-	pPSBlob->Release();
-
-    if (FAILED(hr))
-        return hr;
-
+    m_pTemplateShader = new BaseShader();
+    m_pTemplateShader->CreateVertexShader(hr, L"DX11 Framework.fx", m_pd3dDevice);
+    m_pTemplateShader->CreatePixelShader (hr, L"DX11 Framework.fx", m_pd3dDevice);
+    
     // Define the input layout
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
@@ -154,18 +118,13 @@ HRESULT Application::InitShadersAndInputLayout()
 
 	UINT numElements = ARRAYSIZE(layout);
 
-    // Create the input layout
-	hr = m_pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-                                        pVSBlob->GetBufferSize(), &m_VertexLayout);
-	pVSBlob->Release();
+    // Create the input layout 
+    hr = m_pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
+                                        m_pTemplateShader->pVSBlob->GetBufferSize(), &m_pVertexLayout);
 
-	if (FAILED(hr))
-        return hr;
-
-    // Set the input layout
-    m_ImmediateContext->IASetInputLayout(m_VertexLayout);
-
-	return hr;
+    m_pImmediateContext->IASetInputLayout(m_pVertexLayout);
+	
+    return hr;
 }
 
 HRESULT Application::InitObjects()
@@ -309,9 +268,9 @@ void Application::InitLights()
     m_cb.DiffuseLight = m_DiffuseLight;
 
     // Specular light info
-    m_cb.SpecularMaterial = {0.8f, 0.8f, 0.8f, 1.0f};
-    m_cb.SpecularLight = {0.5f, 0.5f, 0.5f, 1.0f};
-    m_cb.SpecularPower = 5.0f;
+    m_cb.SpecularMaterial = {0.3f, 0.3f, 0.3f, 1.0f};
+    m_cb.SpecularLight = {0.3f, 0.3f, 0.3f, 1.0f};
+    m_cb.SpecularPower = 3.0f;
 }
 
 HRESULT Application::InitTextures()
@@ -354,38 +313,6 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 		return E_FAIL;
 
     ShowWindow(m_hWnd, nCmdShow);
-
-    return S_OK;
-}
-
-HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
-{
-    HRESULT hr = S_OK;
-
-    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-    // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-    // Setting this flag improves the shader debugging experience, but still allows 
-    // the shaders to be optimized and to run exactly the way they will run in 
-    // the release configuration of this program.
-    dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-    ID3DBlob* pErrorBlob;
-    hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel, 
-        dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
-
-    if (FAILED(hr))
-    {
-        if (pErrorBlob != nullptr)
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-
-        if (pErrorBlob) pErrorBlob->Release();
-
-        return hr;
-    }
-
-    if (pErrorBlob) pErrorBlob->Release();
 
     return S_OK;
 }
@@ -437,7 +364,7 @@ HRESULT Application::InitDevice()
     {
         m_driverType = driverTypes[driverTypeIndex];
         hr = D3D11CreateDeviceAndSwapChain(nullptr, m_driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-                                           D3D11_SDK_VERSION, &sd, &m_SwapChain, &m_pd3dDevice, &m_featureLevel, &m_ImmediateContext);
+                                           D3D11_SDK_VERSION, &sd, &m_pSwapChain, &m_pd3dDevice, &m_featureLevel, &m_pImmediateContext);
         if (SUCCEEDED(hr))
             break;
     }
@@ -447,12 +374,12 @@ HRESULT Application::InitDevice()
 
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
-    hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+    hr = m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
     if (FAILED(hr))
         return hr;
 
-    hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_RenderTargetView);
+    hr = m_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &m_pRenderTargetView);
     pBackBuffer->Release();
 
     if (FAILED(hr))
@@ -475,15 +402,15 @@ HRESULT Application::InitDevice()
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0; 
 
-    hr = m_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &m_DepthStencilBuffer);
+    hr = m_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &m_pDepthStencilBuffer);
     if (FAILED(hr))
         return hr;
 
-	hr = m_pd3dDevice->CreateDepthStencilView(m_DepthStencilBuffer, nullptr, &m_DepthStencilView);
+	hr = m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer, nullptr, &m_pDepthStencilView);
     if (FAILED(hr))
         return hr;
 
-    m_ImmediateContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+    m_pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -493,7 +420,7 @@ HRESULT Application::InitDevice()
     vp.MaxDepth = 1.0f;
     vp.TopLeftX = 0;
     vp.TopLeftY = 0;
-    m_ImmediateContext->RSSetViewports(1, &vp);
+    m_pImmediateContext->RSSetViewports(1, &vp);
 
 	InitShadersAndInputLayout();
 
@@ -504,7 +431,7 @@ HRESULT Application::InitDevice()
 	InitTextures();
 
     // Set primitive topology
-    m_ImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Create the constant buffer
 	D3D11_BUFFER_DESC bd;
@@ -513,7 +440,7 @@ HRESULT Application::InitDevice()
 	bd.ByteWidth = sizeof(ConstantBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-    hr = m_pd3dDevice->CreateBuffer(&bd, nullptr, &m_ConstantBuffer);
+    hr = m_pd3dDevice->CreateBuffer(&bd, nullptr, &m_pConstantBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -523,16 +450,16 @@ HRESULT Application::InitDevice()
 	ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
 	wfdesc.FillMode = D3D11_FILL_WIREFRAME;
 	wfdesc.CullMode = D3D11_CULL_NONE;
-	hr = m_pd3dDevice->CreateRasterizerState(&wfdesc, &m_WireFrame);
+	hr = m_pd3dDevice->CreateRasterizerState(&wfdesc, &m_pWireFrame);
 
     return S_OK;
 }
 
 void Application::Cleanup()
 {
-    if (m_ImmediateContext) m_ImmediateContext->ClearState();
+    if (m_pImmediateContext) m_pImmediateContext->ClearState();
 
-    if (m_ConstantBuffer) m_ConstantBuffer->Release();
+    if (m_pConstantBuffer) m_pConstantBuffer->Release();
 
     // Clean up the planets
     /*if (m_Sun) delete m_Sun;
@@ -542,17 +469,15 @@ void Application::Cleanup()
     if (m_MoonMars) delete m_MoonMars;
     if (m_Pyramid) delete m_Pyramid;*/
 
-    if (m_VertexLayout) m_VertexLayout->Release();
-    if (m_VertexShader) m_VertexShader->Release();
-    if (m_PixelShader) m_PixelShader->Release();
+    if (m_pVertexLayout) m_pVertexLayout->Release();
 
-	if (m_RenderTargetView) m_RenderTargetView->Release();
-    if (m_SwapChain) m_SwapChain->Release();
-    if (m_ImmediateContext) m_ImmediateContext->Release();
+	if (m_pRenderTargetView) m_pRenderTargetView->Release();
+    if (m_pSwapChain) m_pSwapChain->Release();
+    if (m_pImmediateContext) m_pImmediateContext->Release();
 	if (m_pd3dDevice) m_pd3dDevice->Release();
-    if (m_WireFrame) m_WireFrame->Release();
-	if (m_DepthStencilView) m_DepthStencilView->Release();
-	if (m_DepthStencilBuffer) m_DepthStencilBuffer->Release();
+    if (m_pWireFrame) m_pWireFrame->Release();
+	if (m_pDepthStencilView) m_pDepthStencilView->Release();
+	if (m_pDepthStencilBuffer) m_pDepthStencilBuffer->Release();
 }
 
 void Application::Update()
@@ -581,7 +506,7 @@ void Application::Update()
         t2 = (dwTimeCur - dwTimeStart) / 2000.0f;
 
         
-        m_ImmediateContext->UpdateSubresource(m_ConstantBuffer, 0, nullptr, &m_cb, 0, 0);
+        m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, nullptr, &m_cb, 0, 0);
     }
 	
     HandleInput();
@@ -620,12 +545,12 @@ void Application::Draw()
     // Clear the back buffer
     //
     float ClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f}; // red,green,blue,alpha   
-    m_ImmediateContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);
+    m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, ClearColor);
 
     //
     // Clear the depth/stencil view
     //
-    m_ImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+    m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     //
     // Setup the transformation matrices
@@ -640,50 +565,45 @@ void Application::Draw()
 	m_cb.mWorld = XMMatrixTranspose(world);
 	m_cb.mView = XMMatrixTranspose(view);
 	m_cb.mProjection = XMMatrixTranspose(projection);
-	m_ImmediateContext->UpdateSubresource(m_ConstantBuffer, 0, nullptr, &m_cb, 0, 0);
+	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, nullptr, &m_cb, 0, 0);
     
     //
     // Setup constant buffer and shaders
     //
-	m_ImmediateContext->VSSetShader(m_VertexShader, nullptr, 0);
-	m_ImmediateContext->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-    m_ImmediateContext->PSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	m_ImmediateContext->PSSetShader(m_PixelShader, nullptr, 0);
-    m_ImmediateContext->PSSetSamplers(0, 1, &m_pSamplerLinear);
-    m_ImmediateContext->PSSetShaderResources(0, 1, &m_pTextureRV);
-    m_ImmediateContext->CSSetShaderResources(1, 1, &m_pTextureNrms);
+	m_pImmediateContext->VSSetShader(m_pTemplateShader->GetVertexShader(), nullptr, 0);
+	m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+    m_pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	m_pImmediateContext->PSSetShader(m_pTemplateShader->GetPixelShader(), nullptr, 0);
+    m_pImmediateContext->PSSetSamplers(0, 1, &m_pSamplerLinear);
+    m_pImmediateContext->PSSetShaderResources(0, 1, &m_pTextureRV);
+    m_pImmediateContext->CSSetShaderResources(1, 1, &m_pTextureNrms);
 
     //
     // Render Object
     //
-    m_Test->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    m_Test->Render(world, m_cb, m_pConstantBuffer, m_pImmediateContext);
 
     //m_Sun->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-    
-    m_MoonEarth->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-    
-    m_Earth->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-    
-    m_Mars->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-    
-    m_Pyramid->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
-    
-    m_MoonMars->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    //m_MoonEarth->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    //m_Earth->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    //m_Mars->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    //m_Pyramid->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
+    //m_MoonMars->Render(world, m_cb, m_ConstantBuffer, m_ImmediateContext);
     
     //
     // Present our back buffer to our front buffer
     //
-    m_SwapChain->Present(0, 0);
+    m_pSwapChain->Present(0, 0);
 }
 
 void Application::HandleInput()
 {
 	if(GetAsyncKeyState(VK_F1))
     {
-	    m_ImmediateContext->RSSetState(m_WireFrame); 
+	    m_pImmediateContext->RSSetState(m_pWireFrame); 
     }
     if(GetAsyncKeyState(VK_F2))
     {
-	    m_ImmediateContext->RSSetState(nullptr); 
+	    m_pImmediateContext->RSSetState(nullptr); 
     }
 }

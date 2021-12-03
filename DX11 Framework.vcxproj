@@ -375,6 +375,7 @@
     <Text Include="Diary.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BaseShader.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\BaseObject.cpp" />
@@ -390,6 +391,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BaseShader.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\BaseObject.h" />
     <ClInclude Include="src\BaseObjectOBJ.h" />
