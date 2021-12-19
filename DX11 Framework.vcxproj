@@ -375,28 +375,37 @@
     <Text Include="Diary.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BaseShader.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
+    <ClCompile Include="src\MouseClass.cpp" />
+    <ClCompile Include="src\MouseEvent.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\BaseObject.cpp" />
     <ClCompile Include="src\BaseObjectOBJ.cpp" />
+    <ClCompile Include="src\BaseShader.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\DDSTextureLoader.cpp" />
+    <ClCompile Include="src\FPCamera.cpp" />
+    <ClCompile Include="src\KeyboardClass.cpp" />
+    <ClCompile Include="src\KeyEvent.cpp" />
     <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\OBJLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DX11 Framework.fx" />
     <None Include="LICENSE" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BaseShader.h" />
+    <ClInclude Include="src\MouseClass.h" />
+    <ClInclude Include="src\MouseEvent.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\BaseObject.h" />
     <ClInclude Include="src\BaseObjectOBJ.h" />
+    <ClInclude Include="src\BaseShader.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\DDSTextureLoader.h" />
+    <ClInclude Include="src\FPCamera.h" />
+    <ClInclude Include="src\KeyboardClass.h" />
+    <ClInclude Include="src\KeyEvent.h" />
     <ClInclude Include="src\Math3D.h" />
     <ClInclude Include="src\OBJLoader.h" />
     <ClInclude Include="src\resource.h" />

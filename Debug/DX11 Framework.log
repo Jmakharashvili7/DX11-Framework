@@ -1,14 +1,7 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Msbuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (DX11 Framework-A007-09.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  BaseShader.cpp
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Msbuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (DX11 Framework-A007-09.vcxproj, DX11 Framework-Predator-Helios-Odachi.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Application.cpp
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(81,58): warning C4244: 'argument': conversion from 'UINT' to 'FLOAT', possible loss of data
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(81,44): warning C4244: 'argument': conversion from 'UINT' to 'FLOAT', possible loss of data
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(122,82): error C2039: 'm_pVSBlob': is not a member of 'BaseShader'
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\BaseShader.h(10): message : see declaration of 'BaseShader'
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(123,60): error C2039: 'm_pVSBlob': is not a member of 'BaseShader'
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\BaseShader.h(10): message : see declaration of 'BaseShader'
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(122,22): error C2660: 'ID3D11Device::CreateInputLayout': function does not take 3 arguments
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\d3d11.h(13627,43): message : see declaration of 'ID3D11Device::CreateInputLayout'
-  Generating Code...
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\BaseShader.cpp(68): warning C4715: 'BaseShader::CreateVertexShader': not all control paths return a value
-C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\BaseShader.cpp(89): warning C4715: 'BaseShader::CreatePixelShader': not all control paths return a value
+C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(366,73): warning C4244: 'argument': conversion from 'UINT' to 'FLOAT', possible loss of data
+C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(366,59): warning C4244: 'argument': conversion from 'UINT' to 'FLOAT', possible loss of data
+C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(876,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\src\Application.cpp(839,22): warning C4189: 'key': local variable is initialized but not referenced
+  DX11 Framework.vcxproj -> C:\Users\jmakh\Documents\Visual Studio 2019\Projects\Github\FOGGS year 2\DX11-Framework\Debug\DX11 Framework.exe

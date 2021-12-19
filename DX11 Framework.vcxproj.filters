@@ -18,16 +18,22 @@
     <Filter Include="FileLoaders">
       <UniqueIdentifier>{eef37684-204c-4913-932b-6fc2a3d48462}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utility">
-      <UniqueIdentifier>{a6f3d9db-0adc-4a44-a5fe-27b11a048d93}</UniqueIdentifier>
+    <Filter Include="InputManager">
+      <UniqueIdentifier>{49c91a7c-b567-427a-b488-59cb20183cea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Levels">
-      <UniqueIdentifier>{d5b8a269-ab65-41b6-99ed-4e4178b7b602}</UniqueIdentifier>
+    <Filter Include="Cameras">
+      <UniqueIdentifier>{95f5712e-306c-48f2-bbd9-8da42cfb534a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX11 Framework.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DDSTextureLoader.cpp">
+      <Filter>FileLoaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OBJLoader.cpp">
+      <Filter>FileLoaders</Filter>
     </ClCompile>
     <ClCompile Include="src\Application.cpp">
       <Filter>MainFolder</Filter>
@@ -38,23 +44,38 @@
     <ClCompile Include="src\BaseObjectOBJ.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math3D.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OBJLoader.cpp">
-      <Filter>FileLoaders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DDSTextureLoader.cpp">
-      <Filter>FileLoaders</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FPCamera.cpp">
+      <Filter>Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KeyboardClass.cpp">
+      <Filter>InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KeyEvent.cpp">
+      <Filter>InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math3D.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MouseClass.cpp">
+      <Filter>InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MouseEvent.cpp">
+      <Filter>InputManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DDSTextureLoader.h">
+      <Filter>FileLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OBJLoader.h">
+      <Filter>FileLoaders</Filter>
+    </ClInclude>
     <ClInclude Include="src\Application.h">
       <Filter>MainFolder</Filter>
     </ClInclude>
@@ -64,26 +85,35 @@
     <ClInclude Include="src\BaseObjectOBJ.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="src\BaseShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
     <ClInclude Include="src\Camera.h">
-      <Filter>GameObjects</Filter>
+      <Filter>Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FPCamera.h">
+      <Filter>Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KeyboardClass.h">
+      <Filter>InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KeyEvent.h">
+      <Filter>InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math3D.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="src\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math3D.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
     <ClInclude Include="src\structs.h">
-      <Filter>Utility</Filter>
+      <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OBJLoader.h">
-      <Filter>FileLoaders</Filter>
+    <ClInclude Include="src\MouseClass.h">
+      <Filter>InputManager</Filter>
     </ClInclude>
-    <ClInclude Include="src\DDSTextureLoader.h">
-      <Filter>FileLoaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseShader.h">
-      <Filter>Shaders</Filter>
+    <ClInclude Include="src\MouseEvent.h">
+      <Filter>InputManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,9 +122,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DX11 Framework.fx">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="LICENSE" />
     <None Include="README.md" />
   </ItemGroup>

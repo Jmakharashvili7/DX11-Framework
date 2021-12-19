@@ -1,17 +1,10 @@
 #include "Camera.h"
 
-Camera::Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, FLOAT windowWidth, FLOAT windowHeight, 
-	FLOAT nearDepth, FLOAT farDepth)
+Camera::Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, XMFLOAT3 right, FLOAT windowWidth, FLOAT windowHeight, 
+	FLOAT nearDepth, FLOAT farDepth) 
+	: m_Position(position), m_LookVec(at), m_UpVec(up), m_RightVec(right), m_WindowHeight(windowHeight)
+	, m_WindowWidth(windowWidth), m_NearDepth(nearDepth), m_FarDepth(farDepth)
 {
-	m_Position = position;
-	m_AtVec = at;
-	m_UpVec = up;
-	
-	// Attributes to hold the window information and the near and far depth values 
-	m_WindowWidth = windowWidth;
-	m_WindowHeight = windowHeight;
-	m_NearDepth = nearDepth;
-	m_FarDepth = farDepth;
 }
 
 Camera::~Camera()
@@ -23,11 +16,11 @@ void Camera::Update()
 {
 	// Convert from float3 to vector
 	XMVECTOR eye = XMLoadFloat3(&m_Position);
-	XMVECTOR at  = XMLoadFloat3(&m_AtVec);
+	XMVECTOR at  = XMLoadFloat3(&m_LookVec);
 	XMVECTOR up  = XMLoadFloat3(&m_UpVec);
 
 	// Initialize the view matrix
-	XMStoreFloat4x4(&m_View, XMMatrixLookAtLH(eye, at, up));
+	XMStoreFloat4x4(&m_View, XMMatrixLookToLH(eye, at, up));
 
     // Initialize the projection matrix
 	XMStoreFloat4x4(&m_Proj, XMMatrixPerspectiveFovLH(XM_PIDIV2, m_WindowWidth / m_WindowHeight, m_NearDepth, m_FarDepth));

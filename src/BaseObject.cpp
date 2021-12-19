@@ -38,8 +38,8 @@ BaseObject::BaseObject(ID3D11Device* localDevice, SimpleVertex vertices[], WORD 
 
 BaseObject::~BaseObject()
 {
-	delete m_indexBuffer;
-	delete m_vertexBuffer;
+	if (m_indexBuffer)  delete m_indexBuffer;
+	if (m_vertexBuffer) delete m_vertexBuffer;
 }
 
 void BaseObject::Render(XMMATRIX& worldMatrix, ConstantBuffer& buffer, ID3D11Buffer* constBuffer, ID3D11DeviceContext* deviceContext)

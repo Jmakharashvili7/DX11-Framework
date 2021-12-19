@@ -11,7 +11,7 @@ class BaseObject
 public:
 	XMFLOAT4X4 m_world;
 private:
-	ID3D11Buffer* m_indexBuffer, *m_vertexBuffer;
+	ID3D11Buffer* m_indexBuffer = nullptr, *m_vertexBuffer = nullptr;
 public:
 	BaseObject(ID3D11Device* localDevice, SimpleVertex vertices[], WORD indices[], HRESULT hr, 
     UINT indexCount, UINT vertexCount);

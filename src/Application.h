@@ -4,6 +4,8 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <directxcolors.h>
+#include <iostream>
+#include <string>
 
 #include "DDSTextureLoader.h"
 #include "resource.h"	
@@ -13,6 +15,9 @@
 #include "OBJLoader.h"
 #include "Camera.h"
 #include "BaseShader.h"
+#include "KeyboardClass.h"
+#include "MouseClass.h"
+#include "FPCamera.h"
 
 using namespace DirectX;
 
@@ -23,19 +28,20 @@ private:
 	HWND                      m_hWnd;
 	D3D_DRIVER_TYPE           m_driverType;
 	D3D_FEATURE_LEVEL         m_featureLevel;
-	ID3D11Device             *m_pd3dDevice;
+	ID3D11Device			 *m_pd3dDevice;
 	ID3D11DeviceContext      *m_pImmediateContext;
 	IDXGISwapChain           *m_pSwapChain;
 	ID3D11RenderTargetView   *m_pRenderTargetView;
 	ID3D11RasterizerState    *m_pWireFrame;
 	ID3D11InputLayout        *m_pVertexLayout;
-	ID3D11Buffer             *m_pConstantBuffer;
+	ID3D11Buffer			 *m_pConstantBuffer;
 	ID3D11DepthStencilView   *m_pDepthStencilView;
 	ID3D11Texture2D          *m_pDepthStencilBuffer;
+	// Keyboard input manager
 	// Shaders
-	BaseShader				 *m_pTemplateShader, m_pPlanetShader;
+	BaseShader               *m_pTemplateShader;
 	// Texture Resource View
-	ID3D11ShaderResourceView *m_pTextureRV = nullptr, *m_pTextureNrms = nullptr;
+	ID3D11ShaderResourceView *m_pTextureSunRV,*m_pTextureMoonRV, *m_pTextureEarthRV, *m_pTextureMarsRV, *m_pTextureNrms;
 	ID3D11SamplerState       *m_pSamplerLinear = nullptr;
 	// View Matrices
 	XMFLOAT4X4                m_world;
@@ -45,20 +51,22 @@ private:
 	// Consant buffer		  
 	ConstantBuffer			  m_cb;
 	// Cameras
-	Camera					 *m_MainCamera;
+	Camera                    *m_MainCamera;
+	FP_Camera                 *m_FPCamera;
 	// Game objects			  
-	BaseObject			     *m_Sun, *m_Mars, *m_Earth, *m_MoonEarth, *m_MoonMars, *m_Pyramid;
+	BaseObject                *m_LegacySun, *m_LegacyMars, *m_LegacyEarth, *m_LegacyMoonEarth, *m_LegacyMoonMars, *m_LegacyPyramid;
 	// OBJ Game Objects
-	BaseObjectOBJ			 *m_Test;
-	 
+	BaseObjectOBJ             *m_Sun, *m_Mars, *m_Moon, *m_Earth;
+	bool typing = false;
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
 	void InitLights();
 	HRESULT InitTextures();
-	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
+	HRESULT LegacyInitObjects();
+	void InitCameras();
 	HRESULT InitObjects();
 
 	UINT _WindowHeight;
@@ -72,6 +80,7 @@ public:
 
 	void Update();
 	void Draw();
+	void LegacyDraw();
 	void HandleInput();
 };
 

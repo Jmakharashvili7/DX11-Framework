@@ -5,11 +5,12 @@
 
 class Camera
 {
-private:
+protected:
 	// Attributes to store the camera position
 	XMFLOAT3 m_Position;
-	XMFLOAT3 m_AtVec;
+	XMFLOAT3 m_LookVec;
 	XMFLOAT3 m_UpVec;
+	XMFLOAT3 m_RightVec;
 	
 	// Attributes to hold the window information and the near and far depth values 
 	FLOAT m_WindowWidth;
@@ -23,7 +24,7 @@ private:
 	
 public:
 	//Constructor and destructor for the camera
-	Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, FLOAT windowWidth, FLOAT windowHeight, 
+	Camera(XMFLOAT3 position, XMFLOAT3 at, XMFLOAT3 up, XMFLOAT3 right, FLOAT windowWidth, FLOAT windowHeight, 
 		FLOAT nearDepth, FLOAT farDepth);
 	~Camera();
 	
@@ -35,8 +36,8 @@ public:
 	inline XMVECTOR GetPosition() const { return XMLoadFloat3(&m_Position); }
 
 	// Retrieve and Set functions for the Camera At
-	inline void SetAt(const XMFLOAT3& at) { m_AtVec = at; }
-	inline XMVECTOR GetAt() const { return XMLoadFloat3(&m_AtVec); }
+	inline void SetAt(const XMFLOAT3& at) { m_LookVec = at; }
+	inline XMVECTOR GetAt() const { return XMLoadFloat3(&m_LookVec); }
 
 	// Retrieve and Set functions for the Camera Up
 	inline void SetUp(const XMFLOAT3& up) { m_UpVec = up; }
@@ -46,14 +47,6 @@ public:
 	inline XMMATRIX GetViewMatrix() const { return XMLoadFloat4x4(&m_View); }
 	inline XMMATRIX GetProjMatrix() const { return XMLoadFloat4x4(&m_Proj); }
 	inline XMMATRIX GetViewProjMatrix() const; // update
-	
-	// Movement functions
-	void Strafe(float force);
-	void Walk(float force);
-
-	// Rotation functions
-	void RotateP(float angle);
-	void RotateY(float angle);
 
 	// A function to reshape the camera volume if the window is resized.
 	void Reshape(FLOAT windowWidth, FLOAT windowHeight, FLOAT nearDepth, FLOAT farDepth);
